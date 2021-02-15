@@ -5,7 +5,8 @@ const ctx = canvas.getContext('2d');
 class Track {
     static all = [];
 
-    constructor({name, segments}) {
+    constructor({id, name, segments}) {
+        this.id = id;
         this.name = name;
         this.segments = Segment.newSegments(segments);
         this.liElement = document.createElement('div');
@@ -14,14 +15,13 @@ class Track {
 
     render() {
         this.liElement.innerHTML = `
-            <li>${this.name}</li>
+            <li data-id=${this.id}>${this.name}</li>
         `;
         return this.liElement;
     }
 
     addToDOM() {
         trackList.appendChild(this.render());
-        this.liElement.addEventListener('click',()=>this.drawTrack)
     }
 
     drawTrack() {
@@ -32,6 +32,14 @@ class Track {
     }
 }
 
+const handleTrackShow = (e) => {
+    if (e.target.dataset.id) {
+        TrackAPI.show(e.target.dataset.id)
+    }
+}
+
+trackList.addEventListener("click", handleTrackShow)
+
 function showTrack(trackInfo) {
     const track = new Track(trackInfo);
     track.drawTrack();
@@ -40,7 +48,6 @@ function showTrack(trackInfo) {
 function indexTracks(tracksInfo) {
     for (const trackInfo of tracksInfo) {
         const track = new Track(trackInfo);
-        debugger
         track.addToDOM();
     }
 }
