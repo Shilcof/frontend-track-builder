@@ -3,15 +3,16 @@ const canvas = document.getElementById('track-display');
 function drawSegment(type, position) {
     if (canvas.getContext) {
         const ctx = canvas.getContext('2d');
-        ctx.fillStyle = 'rgb(000, 0, 0)';
         [x, y] = posToCoordinates(position)
         // Draw the track type
         if (type < 2) {
             ctx.fillRect(x, y+20, 60, 20);
             if (type === 0) {
+                ctx.fillStyle = "white";
                 for (let i = 0; i < 5; i++) {
-                    ctx.clearRect(x+26+(i%2)*4, y+20+i*4, 4, 4);
+                    ctx.fillRect(x+26+(i%2)*4, y+20+i*4, 4, 4);
                 }
+                ctx.fillStyle = "black";
             }
         } else if (type === 2) {
             ctx.fillRect(x+20, y, 20, 60);
