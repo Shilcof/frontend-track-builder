@@ -5,9 +5,16 @@ function drawSegment(type, position) {
         const ctx = canvas.getContext('2d');
         ctx.fillStyle = 'rgb(000, 0, 0)';
         [x, y] = posToCoordinates(position)
-
-        if (type<10) {
+        // Draw the track type
+        if (type < 2) {
             ctx.fillRect(x, y+20, 60, 20);
+            if (type === 0) {
+                for (let i = 0; i < 5; i++) {
+                    ctx.clearRect(x+26+(i%2)*4, y+20+i*4, 4, 4);
+                }
+            }
+        } else if (type === 2) {
+            ctx.fillRect(x+20, y, 20, 60);
         } else {
             adjuster = type - 10;
             x += (adjuster%2)*60;
@@ -36,11 +43,15 @@ function posToCoordinates(position) {
     return [(position % 9)*60-1, (Math.floor(position/9))*60-1]
 }
 
-drawSegment(1, 40)
-drawSegment(1, 41)
-drawSegment(1, 31)
+drawSegment(13, 21)
+drawSegment(12, 22)
+
+drawSegment(2, 30)
+drawSegment(11, 31)
 drawSegment(1, 32)
-drawSegment(10, 42)
-drawSegment(11, 39)
 drawSegment(12, 33)
-drawSegment(13, 30)
+
+drawSegment(11, 39)
+drawSegment(0, 40)
+drawSegment(1, 41)
+drawSegment(10, 42)
