@@ -1,6 +1,9 @@
-const trackList = document.getElementById('track-list')
+const trackList = document.getElementById('track-list');
+const newTrackButton = document.getElementById('new-track');
 const canvas = document.getElementById('track-display');
 const ctx = canvas.getContext('2d');
+
+let creating = false;
 
 class Track {
     static all = [];
@@ -25,20 +28,12 @@ class Track {
     }
 
     drawTrack() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        clearCanvas();
         for(const segment of this.segments) {
             segment.draw();
         }
     }
 }
-
-const handleTrackShow = (e) => {
-    if (e.target.dataset.id) {
-        TrackAPI.show(e.target.dataset.id)
-    }
-}
-
-trackList.addEventListener("click", handleTrackShow)
 
 function showTrack(trackInfo) {
     const track = new Track(trackInfo);
@@ -51,3 +46,44 @@ function indexTracks(tracksInfo) {
         track.addToDOM();
     }
 }
+
+// Track canvas functions
+
+function clearCanvas() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+function addGridLines() {
+    ctx.strokeStyle = "white";
+    ctx.setLineDash([10, 20]);
+    for (let i = 1; i < 9; i++) {
+        ctx.beginPath();
+        ctx.moveTo(10, i*60);
+        ctx.lineTo(canvas.width-10, i*60);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(i*60, 10);
+        ctx.lineTo(i*60, canvas.width-10);
+        ctx.stroke();
+    }
+    ctx.strokeStyle = "black";
+}
+
+// Track related event listeners and functions
+
+const handleTrackShow = (e) => {
+    if (creating) return
+    if (e.target.dataset.id) {
+        TrackAPI.show(e.target.dataset.id)
+    }
+}
+
+trackList.addEventListener("click", handleTrackShow)
+
+const handleNewTrack = (e) => {
+    creating = true;
+    clearCanvas();
+    addGridLines();
+}
+
+newTrackButton.addEventListener("click", handleNewTrack)

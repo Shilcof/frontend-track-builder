@@ -8,6 +8,10 @@ class Segment {
         return segmentArray ? segmentArray.map(segment => new Segment(segment)) : []
     }
 
+    static buildSegmentCanvasses() {
+        
+    }
+
     draw() {
         if (canvas.getContext) {
             let [x, y] = posToCoordinates(this.position)

@@ -1,1 +1,2 @@
 TrackAPI.index()
+Segment.buildSegmentCanvasses()
