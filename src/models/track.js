@@ -3,7 +3,7 @@ class Track {
 
     constructor({name, segments}) {
         this.name = name;
-        this.segments = segments;
+        this.segments = Segment.newSegments(segments);
         this.liElement = document.createElement("div");
         Track.all.push(this);
     }
@@ -22,7 +22,8 @@ class Track {
     drawTrack() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         for(const segment of this.segments) {
-            drawSegment(segment.segment_type, segment.position);
+            // drawSegment(segment.segment_type, segment.position);
+            segment.draw();
         }
     }
 }
