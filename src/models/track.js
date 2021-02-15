@@ -30,7 +30,7 @@ class Track {
     drawTrack() {
         clearCanvas();
         for(const segment of this.segments) {
-            segment.draw();
+            segment.draw(canvas);
         }
     }
 }

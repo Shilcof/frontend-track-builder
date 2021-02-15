@@ -1,19 +1,34 @@
+const segmentList = document.getElementById('segment-list');
+
 class Segment {
     constructor({segment_type, position}) {
         this.segmentType = segment_type;
         this.position = position;
     }
 
+    static segmentTypes = [1, 2, 10, 11, 12, 13];
+
     static newSegments(segmentArray) {
         return segmentArray ? segmentArray.map(segment => new Segment(segment)) : []
     }
 
     static buildSegmentCanvasses() {
-        
+        for (const segmentType of this.segmentTypes) {
+            const segment = new Segment({segment_type: segmentType, position: 0})
+            const segmentCanvas = document.createElement('canvas');
+            segmentCanvas.width = 60;
+            segmentCanvas.height = 60;
+            segmentCanvas.classList.add('segmentCanvas');
+            segmentCanvas.dataset['id'] = segmentType;
+            segment.draw(segmentCanvas)
+            segmentList.append(segmentCanvas)
+        }
     }
 
-    draw() {
+    draw(canvas) {
         if (canvas.getContext) {
+            console.log(this.segmentType)
+            const ctx = canvas.getContext('2d');
             let [x, y] = posToCoordinates(this.position)
             const type = this.segmentType;
             // Draw the track type
@@ -43,6 +58,7 @@ class Segment {
                 ctx.arc(x, y, radius, startAngle, endAngle, anticlockwise);
                 ctx.lineWidth = 20;
                 ctx.stroke();
+                ctx.lineWidth = 1;
             }
         }
 
