@@ -1,0 +1,46 @@
+const canvas = document.getElementById('track-display');
+
+function drawSegment(type, position) {
+    if (canvas.getContext) {
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = 'rgb(000, 0, 0)';
+        [x, y] = posToCoordinates(position)
+
+        if (type<10) {
+            ctx.fillRect(x, y+20, 60, 20);
+        } else {
+            adjuster = type - 10;
+            x += (adjuster%2)*60;
+            y += (Math.floor(adjuster/2))*60;
+
+            if (adjuster === 2) {
+                adjuster = 3;
+            }   else if (adjuster === 3) {
+                adjuster =2;
+            }
+
+            ctx.beginPath();
+            const radius = 30; // Arc radius
+            const startAngle = Math.PI / 2 * adjuster; // Starting point on circle
+            const endAngle = Math.PI / 2 * (adjuster + 1); // End point on circle
+            const anticlockwise = false; // clockwise or anticlockwise
+
+            ctx.arc(x, y, radius, startAngle, endAngle, anticlockwise);
+            ctx.lineWidth = 20;
+            ctx.stroke();
+        }
+    }
+}
+
+function posToCoordinates(position) {
+    return [(position % 9)*60-1, (Math.floor(position/9))*60-1]
+}
+
+drawSegment(1, 40)
+drawSegment(1, 41)
+drawSegment(1, 31)
+drawSegment(1, 32)
+drawSegment(10, 42)
+drawSegment(11, 39)
+drawSegment(12, 33)
+drawSegment(13, 30)
