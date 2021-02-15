@@ -5,7 +5,7 @@ class Segment {
     }
 
     static newSegments(segmentArray) {
-        return segmentArray.map(segment => new Segment(segment))
+        return segmentArray ? segmentArray.map(segment => new Segment(segment)) : []
     }
 
     draw() {

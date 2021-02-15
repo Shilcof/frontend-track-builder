@@ -1,10 +1,14 @@
+const trackList = document.getElementById('track-list')
+const canvas = document.getElementById('track-display');
+const ctx = canvas.getContext('2d');
+
 class Track {
     static all = [];
 
     constructor({name, segments}) {
         this.name = name;
         this.segments = Segment.newSegments(segments);
-        this.liElement = document.createElement("div");
+        this.liElement = document.createElement('div');
         Track.all.push(this);
     }
 
@@ -17,18 +21,26 @@ class Track {
 
     addToDOM() {
         trackList.appendChild(this.render());
+        this.liElement.addEventListener('click',()=>this.drawTrack)
     }
 
     drawTrack() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         for(const segment of this.segments) {
-            // drawSegment(segment.segment_type, segment.position);
             segment.draw();
         }
     }
 }
 
-function buildTrack(info) {
-    const track = new Track(info);
-    track.drawTrack()
+function showTrack(trackInfo) {
+    const track = new Track(trackInfo);
+    track.drawTrack();
+}
+
+function indexTracks(tracksInfo) {
+    for (const trackInfo of tracksInfo) {
+        const track = new Track(trackInfo);
+        debugger
+        track.addToDOM();
+    }
 }

@@ -3,17 +3,17 @@ const port = 'http://localhost:3000'
 class TrackAPI {
     static baseURL = port + "/tracks";
 
-    static index(num, page) {
-        tracksContainer.innerHTML = "";
-        fetch(`${this.baseURL}/?_limit=${num}&_page=${page}`)
+    static index() {
+        trackList.innerHTML = "";
+        fetch(this.baseURL)
             .then(resp => resp.json())
-            .then(buildTracks);
+            .then(indexTracks);
     }
 
     static show(id) {
         fetch(`${this.baseURL}/${id}`)
             .then(resp => resp.json())
-            .then(buildTrack);
+            .then(showTrack);
     }
 
     static create(name) {
