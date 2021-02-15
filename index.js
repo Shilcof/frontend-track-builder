@@ -18,20 +18,15 @@ function drawSegment(type, position) {
             ctx.fillRect(x+20, y, 20, 60);
         } else {
             adjuster = type - 10;
-            x += (adjuster%2)*60;
-            y += (Math.floor(adjuster/2))*60;
-
-            if (adjuster === 2) {
-                adjuster = 3;
-            }   else if (adjuster === 3) {
-                adjuster =2;
-            }
+            [xOffset, yOffset] = [(adjuster%2), (Math.floor(adjuster/2))]
+            x += xOffset*60;
+            y += yOffset*60;
 
             ctx.beginPath();
             const radius = 30; // Arc radius
-            const startAngle = Math.PI / 2 * adjuster; // Starting point on circle
-            const endAngle = Math.PI / 2 * (adjuster + 1); // End point on circle
-            const anticlockwise = false; // clockwise or anticlockwise
+            const startAngle = Math.PI / 2 * xOffset * ((-1)**yOffset); // Starting point on circle
+            const endAngle = Math.PI / 2 * (xOffset + 1) * ((-1)**yOffset); // End point on circle
+            const anticlockwise = yOffset === 1; // clockwise or anticlockwise
 
             ctx.arc(x, y, radius, startAngle, endAngle, anticlockwise);
             ctx.lineWidth = 20;
