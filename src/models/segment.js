@@ -1,4 +1,5 @@
 const segmentList = document.getElementById('segment-list');
+let dragged = null;
 
 class Segment {
     constructor({segment_type, position}) {
@@ -7,6 +8,12 @@ class Segment {
     }
 
     static segmentTypes = [1, 2, 10, 11, 12, 13];
+
+    static new(x, y, segment_type) {
+        const position = coordinatesToPos(x, y);
+        newTrack[position] = segment_type;
+        (new Segment({segment_type, position})).draw(canvas);
+    }
 
     static newSegments(segmentArray) {
         return segmentArray ? segmentArray.map(segment => new Segment(segment)) : []
@@ -19,9 +26,11 @@ class Segment {
             segmentCanvas.width = 59;
             segmentCanvas.height = 59;
             segmentCanvas.draggable="true";
-            segmentCanvas.classList.add('segmentCanvas');
+            segmentCanvas.classList.add('segment-canvas');
             segmentCanvas.dataset['id'] = segmentType;
             segment.draw(segmentCanvas)
+            segmentCanvas.addEventListener("dragstart", e => dragged = e.target, false);
+            segmentCanvas.addEventListener("dragend", e => dragged = null, false);
             segmentCanvas.style.display = "none"
             segmentList.append(segmentCanvas)
         }
@@ -69,4 +78,8 @@ class Segment {
 
 function posToCoordinates(position) {
     return [(position % 9)*60-1, (Math.floor(position/9))*60-1]
+}
+
+function coordinatesToPos(x, y) {
+    return Math.floor(x/60) + 9 * Math.floor(y/60);
 }

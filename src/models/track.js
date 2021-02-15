@@ -3,6 +3,7 @@ const newTrackButton = document.getElementById('new-track');
 const canvas = document.getElementById('track-display');
 const ctx = canvas.getContext('2d');
 
+let newTrack = {40: 0};
 let creating = false;
 
 class Track {
@@ -67,6 +68,7 @@ function addGridLines() {
         ctx.stroke();
     }
     ctx.strokeStyle = "black";
+    ctx.setLineDash([]);
 }
 
 // Track related event listeners and functions
@@ -82,8 +84,21 @@ trackList.addEventListener("click", handleTrackShow)
 
 const handleNewTrack = (e) => {
     creating = true;
+    newTrack = {40: 0};
     clearCanvas();
+    (new Segment({segment_type: 0, position: 40})).draw(canvas);
     addGridLines();
+    [...document.getElementsByClassName('segment-canvas')].forEach(canvas=>canvas.style.display = "");
 }
 
 newTrackButton.addEventListener("click", handleNewTrack)
+
+const handleDrop = (e) => {
+    e.preventDefault();
+    if (!creating || !dragged.classList.contains('segment-canvas')) return
+    Segment.new(e.offsetX, e.offsetY, parseInt(dragged.dataset.id));
+}
+
+canvas.addEventListener("dragover", e => e.preventDefault(), false);
+
+canvas.addEventListener('drop', handleDrop, false);
