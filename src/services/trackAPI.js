@@ -10,6 +10,12 @@ class TrackAPI {
             .then(buildTracks);
     }
 
+    static show(id) {
+        fetch(`${this.baseURL}/${id}`)
+            .then(resp => resp.json())
+            .then(buildTrack);
+    }
+
     static create(name) {
         const configObj = {
             method: "POST",

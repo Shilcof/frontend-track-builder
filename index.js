@@ -1,8 +1,8 @@
 const canvas = document.getElementById('track-display');
+const ctx = canvas.getContext('2d');
 
 function drawSegment(type, position) {
     if (canvas.getContext) {
-        const ctx = canvas.getContext('2d');
         [x, y] = posToCoordinates(position)
         // Draw the track type
         if (type < 2) {
@@ -56,3 +56,5 @@ drawSegment(11, 39)
 drawSegment(0, 40)
 drawSegment(1, 41)
 drawSegment(10, 42)
+
+TrackAPI.show(1)
