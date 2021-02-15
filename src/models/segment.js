@@ -16,12 +16,13 @@ class Segment {
         for (const segmentType of this.segmentTypes) {
             const segment = new Segment({segment_type: segmentType, position: 0})
             const segmentCanvas = document.createElement('canvas');
-            segmentCanvas.width = 60;
-            segmentCanvas.height = 60;
+            segmentCanvas.width = 59;
+            segmentCanvas.height = 59;
             segmentCanvas.draggable="true";
             segmentCanvas.classList.add('segmentCanvas');
             segmentCanvas.dataset['id'] = segmentType;
             segment.draw(segmentCanvas)
+            segmentCanvas.style.display = "none"
             segmentList.append(segmentCanvas)
         }
     }
