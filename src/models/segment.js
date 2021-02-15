@@ -18,6 +18,7 @@ class Segment {
             const segmentCanvas = document.createElement('canvas');
             segmentCanvas.width = 60;
             segmentCanvas.height = 60;
+            segmentCanvas.draggable="true";
             segmentCanvas.classList.add('segmentCanvas');
             segmentCanvas.dataset['id'] = segmentType;
             segment.draw(segmentCanvas)
