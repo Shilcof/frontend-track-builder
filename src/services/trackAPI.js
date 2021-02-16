@@ -16,14 +16,14 @@ class TrackAPI {
             .then(showTrack);
     }
 
-    static create(name) {
+    static create(name, track) {
         const configObj = {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
                 "Accept": "application/json"
             },
-            body: JSON.stringify({name})
+            body: JSON.stringify({name, track})
         }
         console.log(configObj)
         fetch(this.baseURL,configObj)

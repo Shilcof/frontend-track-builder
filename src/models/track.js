@@ -118,7 +118,7 @@ const handleSaveTrack = (e) => {
     if (editing) {
         // placeholder for editing functionalities
     } else {
-        TrackAPI.create();
+        TrackAPI.create(trackNameInput.value, newTrack);
     }
 }
 
