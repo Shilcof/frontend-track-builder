@@ -15,10 +15,18 @@
                 <canvas id="track-display" width="540" height="540"></canvas>
             </div>
             <div class="outer-column">
-                <button id="new-track">Create a new track</button>
-                <input id="track-name-input" type= text style="display: none;"></input>
-                <container id="segment-list"></container>
-                <button id="save-track" style="display: none;">Save your track</button>
+                <div id="creating">
+                    <button id="discard-track">Discard track</button>
+                    <input id="track-name-input" type="text"></input>
+                    <container id="segment-list"></container>
+                    <button id="save-track">Save your track</button>
+                </div>
+                <div id="viewing">
+                    <button id="delete-track">Delete track</button>
+                </div>
+                <div id="home">
+                    <button id="new-track">Create a new track</button>
+                </div>
             </div>
         </div>
 

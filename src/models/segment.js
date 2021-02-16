@@ -33,7 +33,6 @@ class Segment {
             segment.draw(segmentCanvas)
             segmentCanvas.addEventListener("dragstart", e => dragged = e.target, false);
             segmentCanvas.addEventListener("dragend", e => dragged = null, false);
-            segmentCanvas.style.display = "none"
             segmentList.append(segmentCanvas)
         }
     }

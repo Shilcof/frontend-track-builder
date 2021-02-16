@@ -1,11 +1,16 @@
 const trackList = document.getElementById('track-list');
+
 const newTrackButton = document.getElementById('new-track');
 const saveTrackButton = document.getElementById('save-track');
+const deleteTrackButton = document.getElementById('delete-track');
+const discardTrackButton = document.getElementById('discard-track');
+
 const trackNameInput = document.getElementById('track-name-input');
 const canvas = document.getElementById('track-display');
 const ctx = canvas.getContext('2d');
 ctx.lineWidth = 2;
 
+let currentTrack;
 let segmentData = {40: 0};
 let creating = false;
 let editing = false;
@@ -48,7 +53,9 @@ class Track {
 
 // Track CRUD actions
 const showTrack = (trackInfo, index = false) => {
+    renderSidePanel("viewing");
     const track = new Track(trackInfo, index);
+    currentTrack = track;
     track.drawTrack();
 }
 
@@ -60,15 +67,18 @@ const indexTracks = (tracksInfo) => {
 }
 
 const createTrack = (track) => {
-    hideEditor();
+    creating = false;
+    renderSidePanel("viewing");
+    clearCanvas();
     showTrack(track, true);
     renderIndex();
 }
 
 const deleteTrack = (track) => {
-    // default screen...
+    renderSidePanel("home");
     const t = Track.all.find(t=>t.id === track.id);
     t.hideElement();
+    clearCanvas();
 }
 
 function renderIndex() {
@@ -115,28 +125,12 @@ const handleTrackShow = (e) => {
 trackList.addEventListener("click", handleTrackShow)
 
 const handleNewTrack = (e) => {
-    if (newTrackButton.innerText === "Create a new track") {
-        newTrackButton.innerText = "Discard track";
-        creating = true;
-        segmentData = {40: 0};
-        clearCanvas();
-        (new Segment({segment_type: 0, position: 40})).draw(canvas);
-        addGridLines();
-        [...document.getElementsByClassName('segment-canvas')].forEach(canvas=>canvas.style.display = "");
-        saveTrackButton.style.display = "";
-        trackNameInput.style.display = "";
-    } else {
-        hideEditor()
-    }
-}
-
-function hideEditor() {
-    newTrackButton.innerText = "Create a new track";
-    creating = false;
+    renderSidePanel("creating")
+    creating = true;
+    segmentData = {40: 0};
     clearCanvas();
-    [...document.getElementsByClassName('segment-canvas')].forEach(canvas=>canvas.style.display = "none");
-    saveTrackButton.style.display = "none";
-    trackNameInput.style.display = "none";
+    (new Segment({segment_type: 0, position: 40})).draw(canvas);
+    addGridLines();
 }
 
 newTrackButton.addEventListener("click", handleNewTrack)
@@ -150,6 +144,20 @@ const handleSaveTrack = (e) => {
 }
 
 saveTrackButton.addEventListener("click", handleSaveTrack)
+
+const handleDeleteTrack = (e) => {
+    TrackAPI.destroy(currentTrack.id);
+}
+
+deleteTrackButton.addEventListener("click", handleDeleteTrack)
+
+const handleDiscardTrack = (e) => {
+    renderSidePanel("home");
+    clearCanvas();
+    creating = false;
+}
+
+discardTrackButton.addEventListener("click", handleDiscardTrack)
 
 // Drag and drop track creation handling
 const handleDrop = (e) => {
