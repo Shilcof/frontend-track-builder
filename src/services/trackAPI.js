@@ -38,6 +38,6 @@ class TrackAPI {
         const configObj = this.configObj("DELETE", null);
         fetch(`${this.baseURL}/${id}`,configObj)
             .then(resp=>resp.json())
-            .then(createTrack)
+            .then(deleteTrack)
     }
 }

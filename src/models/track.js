@@ -17,21 +17,25 @@ class Track {
         this.id = id;
         this.name = name;
         this.segments = Segment.newSegments(segments);
-        this.liElement = document.createElement('div');
-        trackList.append(this.liElement);
-        this.liElement.style.display = "none";
+        this.element = document.createElement('div');
+        trackList.append(this.element);
+        this.element.style.display = "none";
         if (index) Track.all.push(this);
     }
 
     render() {
-        this.liElement.innerHTML = `
+        this.element.innerHTML = `
             <li data-id=${this.id}>${this.name}</li>
         `;
-        return this.liElement;
+        return this.element;
     }
 
-    show() {
+    showElement() {
         this.render().style.display = "";
+    }
+
+    hideElement() {
+        this.render().style.display = "none";
     }
 
     drawTrack() {
@@ -61,9 +65,15 @@ const createTrack = (track) => {
     renderIndex();
 }
 
+const deleteTrack = (track) => {
+    // default screen...
+    const t = Track.all.find(t=>t.id === track.id);
+    t.hideElement();
+}
+
 function renderIndex() {
     for (const track of Track.all) {
-        track.show();
+        track.showElement();
     }
 }
 
