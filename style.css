@@ -20,3 +20,7 @@ canvas {
 .outer-column {
     flex: 20%;
 }
+
+#save-track {
+    display: none
+}

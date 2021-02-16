@@ -2,6 +2,7 @@ const trackList = document.getElementById('track-list');
 const newTrackButton = document.getElementById('new-track');
 const canvas = document.getElementById('track-display');
 const ctx = canvas.getContext('2d');
+ctx.lineWidth = 2;
 
 let newTrack = {40: 0};
 let creating = false;
@@ -54,17 +55,22 @@ function clearCanvas() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
+function clearSegment(position) {
+    [x, y] = posToCoordinates(position)
+    ctx.clearRect(x, y, canvas.width/9, canvas.height/9);
+}
+
 function addGridLines() {
     ctx.strokeStyle = "white";
     ctx.setLineDash([10, 20]);
     for (let i = 1; i < 9; i++) {
         ctx.beginPath();
-        ctx.moveTo(10, i*60);
-        ctx.lineTo(canvas.width-10, i*60);
+        ctx.moveTo(9, i*60-1);
+        ctx.lineTo(canvas.width-9, i*60-1);
         ctx.stroke();
         ctx.beginPath();
-        ctx.moveTo(i*60, 10);
-        ctx.lineTo(i*60, canvas.width-10);
+        ctx.moveTo(i*60-1, 9);
+        ctx.lineTo(i*60-1, canvas.width-9);
         ctx.stroke();
     }
     ctx.strokeStyle = "black";
@@ -83,12 +89,15 @@ const handleTrackShow = (e) => {
 trackList.addEventListener("click", handleTrackShow)
 
 const handleNewTrack = (e) => {
-    creating = true;
-    newTrack = {40: 0};
-    clearCanvas();
-    (new Segment({segment_type: 0, position: 40})).draw(canvas);
-    addGridLines();
-    [...document.getElementsByClassName('segment-canvas')].forEach(canvas=>canvas.style.display = "");
+    debugger
+    if (e.target.innerText === "Create a new track") {
+        creating = true;
+        newTrack = {40: 0};
+        clearCanvas();
+        (new Segment({segment_type: 0, position: 40})).draw(canvas);
+        addGridLines();
+        [...document.getElementsByClassName('segment-canvas')].forEach(canvas=>canvas.style.display = "");
+    }
 }
 
 newTrackButton.addEventListener("click", handleNewTrack)
@@ -97,6 +106,7 @@ const handleDrop = (e) => {
     e.preventDefault();
     if (!creating || !dragged.classList.contains('segment-canvas')) return
     Segment.new(e.offsetX, e.offsetY, parseInt(dragged.dataset.id));
+    addGridLines();
 }
 
 canvas.addEventListener("dragover", e => e.preventDefault(), false);

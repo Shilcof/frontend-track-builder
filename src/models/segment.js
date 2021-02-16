@@ -11,6 +11,7 @@ class Segment {
 
     static new(x, y, segment_type) {
         const position = coordinatesToPos(x, y);
+        clearSegment(position);
         newTrack[position] = segment_type;
         (new Segment({segment_type, position})).draw(canvas);
     }
@@ -38,7 +39,6 @@ class Segment {
 
     draw(canvas) {
         if (canvas.getContext) {
-            console.log(this.segmentType)
             const ctx = canvas.getContext('2d');
             let [x, y] = posToCoordinates(this.position)
             const type = this.segmentType;
@@ -69,7 +69,7 @@ class Segment {
                 ctx.arc(x, y, radius, startAngle, endAngle, anticlockwise);
                 ctx.lineWidth = 20;
                 ctx.stroke();
-                ctx.lineWidth = 1;
+                ctx.lineWidth = 2;
             }
         }
 
