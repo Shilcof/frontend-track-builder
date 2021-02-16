@@ -6,19 +6,21 @@ const canvas = document.getElementById('track-display');
 const ctx = canvas.getContext('2d');
 ctx.lineWidth = 2;
 
-let newTrack = {40: 0};
+let segmentData = {40: 0};
 let creating = false;
 let editing = false;
 
 class Track {
     static all = [];
 
-    constructor({id, name, segments}) {
+    constructor({id, name, segments}, index = false) {
         this.id = id;
         this.name = name;
         this.segments = Segment.newSegments(segments);
         this.liElement = document.createElement('div');
-        Track.all.push(this);
+        trackList.append(this.liElement);
+        this.liElement.style.display = "none";
+        if (index) Track.all.push(this);
     }
 
     render() {
@@ -28,8 +30,8 @@ class Track {
         return this.liElement;
     }
 
-    addToDOM() {
-        trackList.appendChild(this.render());
+    show() {
+        this.render().style.display = "";
     }
 
     drawTrack() {
@@ -40,15 +42,26 @@ class Track {
     }
 }
 
-function showTrack(trackInfo) {
-    const track = new Track(trackInfo);
+function showTrack(trackInfo, index = false) {
+    const track = new Track(trackInfo, index);
     track.drawTrack();
 }
 
 function indexTracks(tracksInfo) {
     for (const trackInfo of tracksInfo) {
-        const track = new Track(trackInfo);
-        track.addToDOM();
+        const track = new Track(trackInfo, true);
+    }
+    renderIndex();
+}
+
+const createTrack = (track) => {
+    showTrack(track, true);
+    renderIndex();
+}
+
+function renderIndex() {
+    for (const track of Track.all) {
+        track.show();
     }
 }
 
@@ -95,7 +108,7 @@ const handleNewTrack = (e) => {
     if (e.target.innerText === "Create a new track") {
         e.target.innerText = "Discard track";
         creating = true;
-        newTrack = {40: 0};
+        segmentData = {40: 0};
         clearCanvas();
         (new Segment({segment_type: 0, position: 40})).draw(canvas);
         addGridLines();
@@ -118,7 +131,7 @@ const handleSaveTrack = (e) => {
     if (editing) {
         // placeholder for editing functionalities
     } else {
-        TrackAPI.create(trackNameInput.value, newTrack);
+        TrackAPI.create(trackNameInput.value, segmentData);
     }
 }
 

@@ -12,7 +12,7 @@ class Segment {
     static new(x, y, segment_type) {
         const position = coordinatesToPos(x, y);
         clearSegment(position);
-        newTrack[position] = segment_type;
+        segmentData[position] = segment_type;
         (new Segment({segment_type, position})).draw(canvas);
     }
 

@@ -16,18 +16,17 @@ class TrackAPI {
             .then(showTrack);
     }
 
-    static create(name, track) {
+    static create(name, segments_attributes) {
         const configObj = {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
                 "Accept": "application/json"
             },
-            body: JSON.stringify({name, track})
+            body: JSON.stringify({track: {name, segments_attributes}})
         }
-        console.log(configObj)
         fetch(this.baseURL,configObj)
-            .then(d=>d.json())
-            .then(d=>console.log('new track',d))
+            .then(resp=>resp.json())
+            .then(createTrack)
     }
 }
