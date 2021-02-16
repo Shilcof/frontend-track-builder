@@ -11,6 +11,7 @@ class Segment {
 
     static new(x, y, segment_type) {
         const position = coordinatesToPos(x, y);
+        if (position === 40) return
         clearSegment(position);
         segmentData[position] = segment_type;
         (new Segment({segment_type, position})).draw(canvas);

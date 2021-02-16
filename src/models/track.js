@@ -42,7 +42,7 @@ class Track {
     }
 }
 
-// Track CRUD action
+// Track CRUD actions
 const showTrack = (trackInfo, index = false) => {
     const track = new Track(trackInfo, index);
     track.drawTrack();
