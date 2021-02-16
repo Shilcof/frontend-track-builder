@@ -42,12 +42,13 @@ class Track {
     }
 }
 
-function showTrack(trackInfo, index = false) {
+// Track CRUD action
+const showTrack = (trackInfo, index = false) => {
     const track = new Track(trackInfo, index);
     track.drawTrack();
 }
 
-function indexTracks(tracksInfo) {
+const indexTracks = (tracksInfo) => {
     for (const trackInfo of tracksInfo) {
         const track = new Track(trackInfo, true);
     }
@@ -55,6 +56,7 @@ function indexTracks(tracksInfo) {
 }
 
 const createTrack = (track) => {
+    hideEditor();
     showTrack(track, true);
     renderIndex();
 }
@@ -66,7 +68,6 @@ function renderIndex() {
 }
 
 // Track canvas functions
-
 function clearCanvas() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
@@ -94,7 +95,6 @@ function addGridLines() {
 }
 
 // Track related event listeners and functions
-
 const handleTrackShow = (e) => {
     if (creating) return
     if (e.target.dataset.id) {
@@ -105,8 +105,8 @@ const handleTrackShow = (e) => {
 trackList.addEventListener("click", handleTrackShow)
 
 const handleNewTrack = (e) => {
-    if (e.target.innerText === "Create a new track") {
-        e.target.innerText = "Discard track";
+    if (newTrackButton.innerText === "Create a new track") {
+        newTrackButton.innerText = "Discard track";
         creating = true;
         segmentData = {40: 0};
         clearCanvas();
@@ -116,13 +116,17 @@ const handleNewTrack = (e) => {
         saveTrackButton.style.display = "";
         trackNameInput.style.display = "";
     } else {
-        e.target.innerText = "Create a new track";
-        creating = false;
-        clearCanvas();
-        [...document.getElementsByClassName('segment-canvas')].forEach(canvas=>canvas.style.display = "none");
-        saveTrackButton.style.display = "none";
-        trackNameInput.style.display = "none";
+        hideEditor()
     }
+}
+
+function hideEditor() {
+    newTrackButton.innerText = "Create a new track";
+    creating = false;
+    clearCanvas();
+    [...document.getElementsByClassName('segment-canvas')].forEach(canvas=>canvas.style.display = "none");
+    saveTrackButton.style.display = "none";
+    trackNameInput.style.display = "none";
 }
 
 newTrackButton.addEventListener("click", handleNewTrack)
@@ -137,6 +141,7 @@ const handleSaveTrack = (e) => {
 
 saveTrackButton.addEventListener("click", handleSaveTrack)
 
+// Drag and drop track creation handling
 const handleDrop = (e) => {
     e.preventDefault();
     if (!creating || !dragged.classList.contains('segment-canvas')) return
