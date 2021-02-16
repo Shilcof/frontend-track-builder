@@ -3,6 +3,17 @@ const port = 'http://localhost:3000'
 class TrackAPI {
     static baseURL = port + "/tracks";
 
+    static configObj(method, body) {
+        return {
+            method,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            body: JSON.stringify(body)
+        }
+    }
+
     static index() {
         trackList.innerHTML = "";
         fetch(this.baseURL)
@@ -17,15 +28,15 @@ class TrackAPI {
     }
 
     static create(name, segments_attributes) {
-        const configObj = {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            },
-            body: JSON.stringify({track: {name, segments_attributes}})
-        }
+        const configObj = this.configObj("POST", {track: {name, segments_attributes}});
         fetch(this.baseURL,configObj)
+            .then(resp=>resp.json())
+            .then(createTrack)
+    }
+
+    static destroy(id) {
+        const configObj = this.configObj("DELETE", null);
+        fetch(`${this.baseURL}/${id}`,configObj)
             .then(resp=>resp.json())
             .then(createTrack)
     }
