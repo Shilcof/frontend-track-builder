@@ -1,5 +1,6 @@
 const trackList = document.getElementById('track-list');
 const newTrackButton = document.getElementById('new-track');
+const saveTrackButton = document.getElementById('save-track');
 const canvas = document.getElementById('track-display');
 const ctx = canvas.getContext('2d');
 ctx.lineWidth = 2;
@@ -89,14 +90,22 @@ const handleTrackShow = (e) => {
 trackList.addEventListener("click", handleTrackShow)
 
 const handleNewTrack = (e) => {
-    debugger
     if (e.target.innerText === "Create a new track") {
+        e.target.innerText = "Discard track"
         creating = true;
         newTrack = {40: 0};
         clearCanvas();
         (new Segment({segment_type: 0, position: 40})).draw(canvas);
         addGridLines();
         [...document.getElementsByClassName('segment-canvas')].forEach(canvas=>canvas.style.display = "");
+        saveTrackButton.style.display = "";
+    } else {
+        e.target.innerText = "Create a new track"
+        creating = false;
+        newTrack = {};
+        clearCanvas();
+        [...document.getElementsByClassName('segment-canvas')].forEach(canvas=>canvas.style.display = "none");
+        saveTrackButton.style.display = "none";
     }
 }
 
