@@ -6,6 +6,9 @@ const editTrackButton = document.getElementById('edit-track');
 const deleteTrackButton = document.getElementById('delete-track');
 const discardTrackButton = document.getElementById('discard-track');
 
+const trackName = document.getElementById('track-name');
+const createdBy = document.getElementById('created-by');
+
 const trackNameSearch = document.getElementById('track-name-search');
 const trackNameInput = document.getElementById('track-name-input');
 
@@ -71,6 +74,8 @@ const showTrack = (trackInfo, index = false) => {
     renderSidePanel("viewing");
     const track = new Track(trackInfo, index);
     currentTrack = track;
+    trackName.innerHTML = `${track.name}`
+    createdBy.innerHTML = `created by: ${track.name}`
     track.drawTrack();
 }
 

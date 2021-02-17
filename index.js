@@ -41,4 +41,6 @@ renderSidePanel("home")
 home.addEventListener('click',e=> {
     creating = false;
     renderSidePanel('home');
+    // code for welcom canvas here?
+    clearCanvas();
 })
