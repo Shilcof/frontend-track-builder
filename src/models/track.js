@@ -30,6 +30,14 @@ class Track {
         if (index) Track.all.push(this);
     }
 
+    segmentData() {
+        const data = {};
+        for (const segment of this.segments) {
+            data[segment.position] = segment.segmentType;
+        }
+        return data;
+    }
+
     render() {
         this.element.innerHTML = `
             <div class="card mb-3 bg-light">
@@ -136,11 +144,11 @@ const handleTrackShow = (e) => {
 trackList.addEventListener("click", handleTrackShow)
 
 const handleNewTrack = (e) => {
-    renderSidePanel("creating")
-    creating = true;
-    segmentData = {40: 0};
     clearCanvas();
     (new Segment({segment_type: 0, position: 40})).draw(canvas);
+    creating = true;
+    renderSidePanel("creating")
+    segmentData = {40: 0};
     addGridLines();
 }
 
@@ -149,12 +157,24 @@ newTrackButton.addEventListener("click", handleNewTrack)
 const handleSaveTrack = (e) => {
     if (editing) {
         // placeholder for editing functionalities
+        TrackAPI.update(trackNameInput.value, segmentData, currentTrack.id);
     } else {
         TrackAPI.create(trackNameInput.value, segmentData);
     }
 }
 
 saveTrackButton.addEventListener("click", handleSaveTrack)
+
+const handleEditTrack = (e) => {
+    trackNameInput.value = currentTrack.name;
+    creating = true;
+    editing = true;
+    renderSidePanel("creating")
+    segmentData = currentTrack.segmentData()
+    addGridLines();
+}
+
+editTrackButton.addEventListener("click", handleEditTrack)
 
 const handleDeleteTrack = (e) => {
     TrackAPI.destroy(currentTrack.id);

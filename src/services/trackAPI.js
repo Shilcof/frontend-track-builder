@@ -34,6 +34,13 @@ class TrackAPI {
             .then(createTrack)
     }
 
+    static update(name, segments_attributes, id) {
+        const configObj = this.configObj("POST", {track: {name, segments_attributes}});
+        fetch(`${this.baseURL}/${id}`,configObj)
+            .then(resp=>resp.json())
+            .then(createTrack)
+    }
+
     static destroy(id) {
         const configObj = this.configObj("DELETE", null);
         fetch(`${this.baseURL}/${id}`,configObj)
