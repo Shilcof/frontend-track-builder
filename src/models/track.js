@@ -8,6 +8,7 @@ const discardTrackButton = document.getElementById('discard-track');
 
 const trackNameSearch = document.getElementById('track-name-search');
 const trackNameInput = document.getElementById('track-name-input');
+
 const canvas = document.getElementById('track-display');
 const ctx = canvas.getContext('2d');
 ctx.lineWidth = 2;
@@ -167,7 +168,6 @@ newTrackButton.addEventListener("click", handleNewTrack)
 
 const handleSaveTrack = (e) => {
     if (editing) {
-        // placeholder for editing functionalities
         TrackAPI.update(trackNameInput.value, segmentData, currentTrack.id);
     } else {
         TrackAPI.create(trackNameInput.value, segmentData);
