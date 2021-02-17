@@ -35,10 +35,10 @@ class TrackAPI {
     }
 
     static update(name, segments_attributes, id) {
-        const configObj = this.configObj("POST", {track: {name, segments_attributes}});
+        const configObj = this.configObj("PATCH", {track: {name, segments_attributes}});
         fetch(`${this.baseURL}/${id}`,configObj)
             .then(resp=>resp.json())
-            .then(createTrack)
+            .then(updateTrack)
     }
 
     static destroy(id) {

@@ -82,9 +82,20 @@ const indexTracks = (tracksInfo) => {
 
 const createTrack = (track) => {
     creating = false;
-    renderSidePanel("viewing");
     clearCanvas();
     showTrack(track, true);
+    renderIndex();
+}
+
+const updateTrack = (track) => {
+    creating = false;
+    editing = false;
+    clearCanvas();
+    currentTrack.name = track.name;
+    console.log(track.segments)
+    currentTrack.segments = Segment.newSegments(track.segments);
+    debugger
+    showTrack(track);
     renderIndex();
 }
 
