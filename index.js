@@ -1,3 +1,4 @@
+const home = document.getElementById("home-link");
 const homePanel = document.getElementById("home");
 const viewingPanel = document.getElementById("viewing");
 const creatingPanel = document.getElementById("creating");
@@ -16,3 +17,5 @@ function renderSidePanel(panelName) {
 TrackAPI.index();
 Segment.buildSegmentCanvasses();
 renderSidePanel("home")
+
+home.addEventListener('click',e=> {if (!creating) renderSidePanel('home')})
