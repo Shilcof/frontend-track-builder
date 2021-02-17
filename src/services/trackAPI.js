@@ -27,15 +27,15 @@ class TrackAPI {
             .then(showTrack);
     }
 
-    static create(name, segments_attributes) {
-        const configObj = this.configObj("POST", {track: {name, segments_attributes}});
+    static create(name, creator, segments_attributes) {
+        const configObj = this.configObj("POST", {track: {name, creator, segments_attributes}});
         fetch(this.baseURL,configObj)
             .then(resp=>resp.json())
             .then(createTrack)
     }
 
-    static update(name, segments_attributes, id) {
-        const configObj = this.configObj("PATCH", {track: {name, segments_attributes}});
+    static update(name, creator, segments_attributes, id) {
+        const configObj = this.configObj("PATCH", {track: {name, creator, segments_attributes}});
         fetch(`${this.baseURL}/${id}`,configObj)
             .then(resp=>resp.json())
             .then(updateTrack)

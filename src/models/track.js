@@ -11,6 +11,7 @@ const createdBy = document.getElementById('created-by');
 
 const trackNameSearch = document.getElementById('track-name-search');
 const trackNameInput = document.getElementById('track-name-input');
+const trackCreatorInput = document.getElementById('track-creator-input');
 
 const canvas = document.getElementById('track-display');
 const ctx = canvas.getContext('2d');
@@ -24,9 +25,10 @@ let editing = false;
 class Track {
     static all = [];
 
-    constructor({id, name, segments}, index = false) {
+    constructor({id, name, creator, segments}, index = false) {
         this.id = id;
         this.name = name;
+        this.creator = creator;
         this.segments = Segment.newSegments(segments);
         this.element = document.createElement('div');
         trackList.append(this.element);
@@ -44,9 +46,10 @@ class Track {
 
     render() {
         this.element.innerHTML = `
-            <div class="card mb-3 bg-light">
+            <div class="card mb-3 pb-n1 bg-light" data-id=${this.id}>
                 <div class="card-body" data-id=${this.id}>
-                    ${this.name}
+                    <h5 data-id=${this.id}>${this.name}</h5> 
+                    created by: ${this.creator ? this.creator : 'anonymous'}
                 </div>
             </div>
         `;
@@ -75,7 +78,7 @@ const showTrack = (trackInfo, index = false) => {
     const track = new Track(trackInfo, index);
     currentTrack = track;
     trackName.innerHTML = `${track.name}`
-    createdBy.innerHTML = `created by: ${track.name}`
+    createdBy.innerHTML = `created by: ${track.creator ? track.creator : 'anonymous'}`
     track.drawTrack();
 }
 
@@ -161,6 +164,8 @@ const handleTrackShow = (e) => {
 trackList.addEventListener("click", handleTrackShow)
 
 const handleNewTrack = (e) => {
+    trackNameInput.value = "";
+    trackCreatorInput.value = "";
     clearCanvas();
     (new Segment({segment_type: 0, position: 40})).draw(canvas);
     creating = true;
@@ -173,9 +178,9 @@ newTrackButton.addEventListener("click", handleNewTrack)
 
 const handleSaveTrack = (e) => {
     if (editing) {
-        TrackAPI.update(trackNameInput.value, segmentData, currentTrack.id);
+        TrackAPI.update(trackNameInput.value, trackCreatorInput.value, segmentData, currentTrack.id);
     } else {
-        TrackAPI.create(trackNameInput.value, segmentData);
+        TrackAPI.create(trackNameInput.value, trackCreatorInput.value, segmentData);
     }
 }
 
@@ -183,6 +188,7 @@ saveTrackButton.addEventListener("click", handleSaveTrack)
 
 const handleEditTrack = (e) => {
     trackNameInput.value = currentTrack.name;
+    trackCreatorInput.value = currentTrack.creator;
     creating = true;
     editing = true;
     renderSidePanel("creating")
