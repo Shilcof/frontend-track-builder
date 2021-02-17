@@ -39,9 +39,6 @@
                                 <div id="creating">
                                     <div class="form-row">
                                         <div class="col-md-12 mb-3">
-                                            <button id="discard-track" class="btn btn-outline-danger btn-block">Discard track</button>
-                                        </div>
-                                        <div class="col-md-12 mb-3">
                                             <input id="track-name-input" class="form-control" type="text" placeholder="Track name"></input>
                                         </div>
                                         <div class="col-md-12 mb-3 text-justify">
@@ -54,12 +51,23 @@
                                         <div class="col-md-12 mb-3">
                                             <button id="save-track" class="btn btn-outline-primary btn-block">Save your track</button>
                                         </div>
+                                        <div class="col-md-12 mb-3">
+                                            <button id="discard-track" class="btn btn-outline-danger btn-block">Discard track</button>
+                                        </div>
                                     </div>
                                 </div>
                                 <div id="viewing">
-                                    <button id="delete-track" class="btn btn-outline-danger btn-block">Delete track</button>
+                                    <div class="col-md-12 mb-3 text-justify">
+                                        <p>To return to the home menu, click 'Track Builder' in the navbar.</p>
+                                    </div>
+                                    <button id="delete-track" class="btn btn-outline-danger btn-block" style="display: none;">Delete track</button>
                                 </div>
                                 <div id="home">
+                                    <div class="col-md-12 mb-3 text-justify">
+                                        <p class="text-center font-weight-bold">Welcome to track builder!</p>
+                                        <p>View tracks created by other users by searching for them in the panel on the left. To create your own track, click the button below.</p>
+                                        <p>To return to this menu at any time, click 'Track Builder' in the navbar.</p>
+                                    </div>
                                     <button id="new-track" class="btn btn-outline-primary btn-block">Create a new track</button>
                                 </div>
                             </div>
