@@ -5,6 +5,7 @@ const saveTrackButton = document.getElementById('save-track');
 const deleteTrackButton = document.getElementById('delete-track');
 const discardTrackButton = document.getElementById('discard-track');
 
+const trackNameSearch = document.getElementById('track-name-search');
 const trackNameInput = document.getElementById('track-name-input');
 const canvas = document.getElementById('track-display');
 const ctx = canvas.getContext('2d');
@@ -30,7 +31,11 @@ class Track {
 
     render() {
         this.element.innerHTML = `
-            <li data-id=${this.id}>${this.name}</li>
+            <div class="card mb-3 bg-light">
+                <div class="card-body" data-id=${this.id}>
+                    ${this.name}
+                </div>
+            </div>
         `;
         return this.element;
     }
@@ -82,7 +87,12 @@ const deleteTrack = (track) => {
 }
 
 function renderIndex() {
+    const search = new RegExp(trackNameSearch.value, 'gi');
+    const tracksToDisplay = Track.all.filter(t=>t.name.match(search))
     for (const track of Track.all) {
+        track.hideElement();
+    }
+    for (const track of tracksToDisplay.slice(Math.max(tracksToDisplay.length - 5, 0))) {
         track.showElement();
     }
 }
@@ -158,6 +168,9 @@ const handleDiscardTrack = (e) => {
 }
 
 discardTrackButton.addEventListener("click", handleDiscardTrack)
+
+trackNameSearch.addEventListener('change', renderIndex)
+trackNameSearch.addEventListener('keyup', renderIndex)
 
 // Drag and drop track creation handling
 const handleDrop = (e) => {

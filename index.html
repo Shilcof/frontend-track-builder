@@ -7,17 +7,31 @@
     </head>
     <body class="d-flex flex-column min-vh-100">
         
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light px-4 border">
             <h1>Track Builder</h1>
         </nav>
         <div class="pt-3 px-3">
             <div class="container-fluid pb-5">
                 <div class="row">
                     <div class=" col-md-3">
+                        <div class="card mb-3 bg-light">
+                            <div class="card-body">
+                                <div class="col-md-12">
+                                    <h5 class="mb-3 text-center">Search for tracks by title</h5>
+                                    <div class="form-row">
+                                        <div class="col-md-12">
+                                            <input id="track-name-search" class="form-control" type="text" placeholder="Track name"></input>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <container id="track-list"></container>
                     </div>
-                    <div class="col-md-6">
-                        <canvas id="track-display" width="540" height="540"></canvas>
+                    <div class="col-md-6 min-width-560-md">
+                        <div class="card py-3 bg-light">
+                            <canvas id="track-display" width="540" height="540"></canvas>
+                        </div>
                     </div>
                     <div class=" col-md-3">
                         <div class="card mb-3 bg-light">
