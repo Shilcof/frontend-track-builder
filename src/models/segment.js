@@ -7,7 +7,7 @@ class Segment {
         this.position = position;
     }
 
-    static segmentTypes = [1, 2, 10, 11, 12, 13];
+    static segmentTypes = [1, 2, 10, 11, 12, 13, 99];
 
     static new(x, y, segment_type) {
         const position = coordinatesToPos(x, y);
@@ -29,6 +29,7 @@ class Segment {
             segmentCanvas.height = 59;
             segmentCanvas.draggable="true";
             segmentCanvas.classList.add('segment-canvas');
+            segmentCanvas.classList.add('mb-3');
             segmentCanvas.dataset['id'] = segmentType;
             segment.draw(segmentCanvas)
             segmentCanvas.addEventListener("dragstart", e => dragged = e.target, false);
