@@ -2,6 +2,7 @@ const trackList = document.getElementById('track-list');
 
 const newTrackButton = document.getElementById('new-track');
 const saveTrackButton = document.getElementById('save-track');
+const editTrackButton = document.getElementById('edit-track');
 const deleteTrackButton = document.getElementById('delete-track');
 const discardTrackButton = document.getElementById('discard-track');
 

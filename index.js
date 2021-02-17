@@ -19,6 +19,7 @@ window.addEventListener('keyup', (e) => {
     pressed.push(e.key);
     pressed.splice(-konami.length - 1, pressed.length - konami.length);
     if (checkArrayEquality(pressed, konami)) {
+        editTrackButton.style.display = "";
         deleteTrackButton.style.display = "";
     }
 });
