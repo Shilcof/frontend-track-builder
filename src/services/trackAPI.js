@@ -1,4 +1,4 @@
-const port = 'http://localhost:3000'
+const port = 'http://localhost:3000';
 
 class TrackAPI {
     static baseURL = port + "/tracks";
