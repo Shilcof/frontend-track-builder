@@ -32,6 +32,7 @@ class TrackAPI {
         fetch(this.baseURL,configObj)
             .then(resp=>resp.json())
             .then(createTrack)
+            .catch(displayErrors)
     }
 
     static update(name, creator, segments_attributes, id) {
@@ -39,6 +40,7 @@ class TrackAPI {
         fetch(`${this.baseURL}/${id}`,configObj)
             .then(resp=>resp.json())
             .then(updateTrack)
+            .catch(displayErrors)
     }
 
     static destroy(id) {

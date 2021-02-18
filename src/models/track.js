@@ -12,6 +12,7 @@ const createdBy = document.getElementById('created-by');
 const trackNameSearch = document.getElementById('track-name-search');
 const trackNameInput = document.getElementById('track-name-input');
 const trackCreatorInput = document.getElementById('track-creator-input');
+const errorMessages = document.getElementById('error-messages');
 
 const canvas = document.getElementById('track-display');
 const ctx = canvas.getContext('2d');
@@ -90,22 +91,30 @@ const indexTracks = (tracksInfo) => {
 }
 
 const createTrack = (track) => {
-    creating = false;
-    clearCanvas();
-    showTrack(track, true);
-    renderIndex();
+    if (track.status !== "error") {
+        creating = false;
+        clearCanvas();
+        showTrack(track, true);
+        renderIndex();
+    } else {
+        throw new Error(track.message);
+    }
 }
 
 const updateTrack = (track) => {
-    creating = false;
-    editing = false;
-    clearCanvas();
-    currentTrack.name = track.name;
-    console.log(track.segments)
-    currentTrack.segments = Segment.newSegments(track.segments);
-    debugger
-    showTrack(track);
-    renderIndex();
+    if (track.status !== "error") {
+        creating = false;
+        editing = false;
+        clearCanvas();
+        currentTrack.name = track.name;
+        console.log(track.segments)
+        currentTrack.segments = Segment.newSegments(track.segments);
+        debugger
+        showTrack(track);
+        renderIndex();
+    } else {
+        throw new Error(track.message);
+    }
 }
 
 const deleteTrack = (track) => {
@@ -113,6 +122,16 @@ const deleteTrack = (track) => {
     const t = Track.all.find(t=>t.id === track.id);
     t.hideElement();
     clearCanvas();
+}
+
+const displayErrors = (errors) => {
+    const messages = errors.message.split(',')
+    errorMessages.innerHTML = `
+        <p>${messages.length} errors prevented saving this track.</p>
+    `
+    for (const error of messages) {
+        errorMessages.innerHTML += `<li>${error}.</li>`
+    }
 }
 
 function renderIndex() {
@@ -164,6 +183,7 @@ const handleTrackShow = (e) => {
 trackList.addEventListener("click", handleTrackShow)
 
 const handleNewTrack = (e) => {
+    errorMessages.innerHTML = '';
     trackNameInput.value = "";
     trackCreatorInput.value = "";
     clearCanvas();
@@ -187,6 +207,7 @@ const handleSaveTrack = (e) => {
 saveTrackButton.addEventListener("click", handleSaveTrack)
 
 const handleEditTrack = (e) => {
+    errorMessages.innerHTML = '';
     trackNameInput.value = currentTrack.name;
     trackCreatorInput.value = currentTrack.creator;
     creating = true;
