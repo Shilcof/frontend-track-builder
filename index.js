@@ -113,7 +113,7 @@ const drawCars = () => {
     ctx.strokeStyle = "black";
 
     // sending to the server the users car location
-    if (ready) updateCarLocation();
+    if (ready && channel === currentTrack.id) updateCarLocation();
 
     // requesting next animation and storing key to stop animation
     animation = (window.requestAnimationFrame(drawCars));
@@ -122,25 +122,51 @@ const drawCars = () => {
 // socket set up
 const socket = new WebSocket(webSocket);
 
-socket.onopen = function(e){
-    // requestSubscribe();
-}
-
 socket.onmessage = function(e) {
     const data = JSON.parse(e.data);
     if (data.type === 'ping' || creating || !data.message) return
     const carData = data.message.content;
-    cars[carData.ip] = carData;
+    if (ip !== carData.ip && ready) cars[carData.ip] = carData;
+    if (carData.active === false) {
+        cars = {};
+        cars[ip] = myCar;
+    }
 }
 
+let channel;
+let readyTimeout;
 function requestSubscribe() {
+    ready = false;
+    if (readyTimeout) clearTimeout(readyTimeout);
+    readyTimeout = setTimeout(()=>ready=true, 100);
+
+    if (channel) {
+        const removeCar = {...myCar};
+        removeCar.active = false;
+        let message = {
+            command: "message",
+            identifier: JSON.stringify({channel: "TrackChannel", id: channel}),
+            data: JSON.stringify(removeCar)
+        };
+        socket.send(JSON.stringify(message));
+        
+        message = {
+            command: "unsubscribe",
+            identifier: JSON.stringify({channel: "TrackChannel", id: channel})
+        };
+        socket.send(JSON.stringify(message));
+    }
+
     const message = {
         command: "subscribe",
         identifier: JSON.stringify({channel: "TrackChannel", id: currentTrack.id})
     };
     socket.send(JSON.stringify(message));
-    ready = false;
-    setTimeout(()=>ready=true, 500);
+    channel = currentTrack.id;
+    
+    cars = {};
+    cars[ip] = myCar;
+    console.log(cars)
 }
 
 function updateCarLocation() {
