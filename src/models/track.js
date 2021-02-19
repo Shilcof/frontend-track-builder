@@ -1,27 +1,19 @@
 const trackList = document.getElementById('track-list');
-
-const newTrackButton = document.getElementById('new-track');
-const saveTrackButton = document.getElementById('save-track');
-const editTrackButton = document.getElementById('edit-track');
-const deleteTrackButton = document.getElementById('delete-track');
-const discardTrackButton = document.getElementById('discard-track');
-
-const trackName = document.getElementById('track-name');
-const createdBy = document.getElementById('created-by');
-
 const trackNameSearch = document.getElementById('track-name-search');
 const trackNameInput = document.getElementById('track-name-input');
 const trackCreatorInput = document.getElementById('track-creator-input');
 const errorMessages = document.getElementById('error-messages');
-
 const canvas = document.getElementById('track-display');
 const ctx = canvas.getContext('2d');
+
 ctx.lineWidth = 2;
 
 let currentTrack;
 let segmentData = {40: 0};
 let creating = false;
 let editing = false;
+
+addTrackEventListeners();
 
 class Track {
     static all = [];
@@ -71,58 +63,62 @@ class Track {
             segment.draw(canvas);
         }
     }
-}
 
-// Track CRUD actions
-const showTrack = (trackInfo, index = false) => {
-    renderSidePanel("viewing");
-    const track = new Track(trackInfo, index);
-    currentTrack = track;
-    trackName.innerHTML = `${track.name}`
-    createdBy.innerHTML = `created by: ${track.creator ? track.creator : 'anonymous'}`
-    track.drawTrack();
-    window.cancelAnimationFrame(animation);
-    animation = window.requestAnimationFrame(drawCars);
-}
-
-const indexTracks = (tracksInfo) => {
-    for (const trackInfo of tracksInfo) {
-        const track = new Track(trackInfo, true);
-    }
-    renderIndex();
-}
-
-const createTrack = (track) => {
-    if (track.status !== "error") {
-        creating = false;
-        clearCanvas();
-        showTrack(track, true);
+    static index = (tracksInfo) => {
+        for (const trackInfo of tracksInfo) {
+            const track = new Track(trackInfo, true);
+        }
         renderIndex();
-    } else {
-        throw new Error(track.message);
     }
-}
 
-const updateTrack = (track) => {
-    if (track.status !== "error") {
-        creating = false;
-        editing = false;
-        clearCanvas();
-        currentTrack.name = track.name;
-        console.log(track.segments)
-        currentTrack.segments = Segment.newSegments(track.segments);
-        debugger
-        showTrack(track);
-        renderIndex();
-    } else {
-        throw new Error(track.message);
+    static show = (trackInfo, index = false) => {
+        const trackName = document.getElementById('track-name');
+        const createdBy = document.getElementById('created-by');
+        renderSidePanel("viewing");
+        const track = new Track(trackInfo, index);
+        currentTrack = track;
+        trackName.innerHTML = `${track.name}`
+        createdBy.innerHTML = `created by: ${track.creator ? track.creator : 'anonymous'}`
+        track.drawTrack();
+        window.cancelAnimationFrame(animation);
+        animation = window.requestAnimationFrame(drawCars);
+    }
+
+    static create = (track) => {
+        if (track.status !== "error") {
+            creating = false;
+            clearCanvas();
+            Track.show(track, true);
+            renderIndex();
+        } else {
+            throw new Error(track.message);
+        }
+    }
+
+    static update = (track) => {
+        if (track.status !== "error") {
+            creating = false;
+            editing = false;
+            clearCanvas();
+            currentTrack.name = track.name;
+            console.log(track.segments)
+            currentTrack.segments = Segment.newSegments(track.segments);
+            debugger
+            Track.show(track);
+            renderIndex();
+        } else {
+            throw new Error(track.message);
+        }
     }
 }
 
 const deleteTrack = (track) => {
     renderSidePanel("home");
     const t = Track.all.find(t=>t.id === track.id);
+    const tIndex = Track.all.indexOf(t);
+    Track.all.splice(tIndex, 1);
     t.hideElement();
+    renderIndex();
     clearCanvas();
 }
 
@@ -175,79 +171,79 @@ function addGridLines() {
 }
 
 // Track related event listeners and functions
-const handleTrackShow = (e) => {
-    if (creating) return
-    if (e.target.dataset.id) {
-        TrackAPI.show(e.target.dataset.id)
+function addTrackEventListeners() {
+    const newTrackButton = document.getElementById('new-track');
+    const saveTrackButton = document.getElementById('save-track');
+    const editTrackButton = document.getElementById('edit-track');
+    const deleteTrackButton = document.getElementById('delete-track');
+    const discardTrackButton = document.getElementById('discard-track');
+
+    const handleTrackShow = (e) => {
+        if (creating) return
+        if (e.target.dataset.id) {
+            TrackAPI.show(e.target.dataset.id)
+        }
     }
-}
-
-trackList.addEventListener("click", handleTrackShow)
-
-const handleNewTrack = (e) => {
-    errorMessages.innerHTML = '';
-    trackNameInput.value = "";
-    trackCreatorInput.value = "";
-    clearCanvas();
-    (new Segment({segment_type: 0, position: 40})).draw(canvas);
-    creating = true;
-    renderSidePanel("creating")
-    segmentData = {40: 0};
-    addGridLines();
-}
-
-newTrackButton.addEventListener("click", handleNewTrack)
-
-const handleSaveTrack = (e) => {
-    if (editing) {
-        TrackAPI.update(trackNameInput.value, trackCreatorInput.value, segmentData, currentTrack.id);
-    } else {
-        TrackAPI.create(trackNameInput.value, trackCreatorInput.value, segmentData);
+    
+    const handleNewTrack = (e) => {
+        errorMessages.innerHTML = '';
+        trackNameInput.value = "";
+        trackCreatorInput.value = "";
+        clearCanvas();
+        (new Segment({segment_type: 0, position: 40})).draw(canvas);
+        creating = true;
+        renderSidePanel("creating")
+        segmentData = {40: 0};
+        addGridLines();
     }
+    
+    const handleSaveTrack = (e) => {
+        if (editing) {
+            TrackAPI.update(trackNameInput.value, trackCreatorInput.value, segmentData, currentTrack.id);
+        } else {
+            TrackAPI.create(trackNameInput.value, trackCreatorInput.value, segmentData);
+        }
+    }
+    
+    const handleEditTrack = (e) => {
+        errorMessages.innerHTML = '';
+        trackNameInput.value = currentTrack.name;
+        trackCreatorInput.value = currentTrack.creator;
+        creating = true;
+        editing = true;
+        renderSidePanel("creating")
+        segmentData = currentTrack.segmentData()
+        clearCanvas();
+        currentTrack.drawTrack();
+        addGridLines();
+    }
+    
+    const handleDeleteTrack = (e) => {
+        TrackAPI.destroy(currentTrack.id);
+    }
+    
+    const handleDiscardTrack = (e) => {
+        renderSidePanel("home");
+        clearCanvas();
+        creating = false;
+    }
+    
+    trackList.addEventListener("click", handleTrackShow)
+    newTrackButton.addEventListener("click", handleNewTrack);
+    saveTrackButton.addEventListener("click", handleSaveTrack);
+    editTrackButton.addEventListener("click", handleEditTrack);
+    deleteTrackButton.addEventListener("click", handleDeleteTrack);
+    discardTrackButton.addEventListener("click", handleDiscardTrack);
+    trackNameSearch.addEventListener('change', renderIndex);
+    trackNameSearch.addEventListener('keyup', renderIndex);
+    // Drag and drop track creation handling
+    const handleDrop = (e) => {
+        e.preventDefault();
+        if (!creating || !dragged.classList.contains('segment-canvas')) return
+        Segment.new(e.offsetX, e.offsetY, parseInt(dragged.dataset.id));
+        addGridLines();
+    }
+
+    canvas.addEventListener("dragover", e => e.preventDefault(), false);
+    canvas.addEventListener('drop', handleDrop, false);
 }
-
-saveTrackButton.addEventListener("click", handleSaveTrack)
-
-const handleEditTrack = (e) => {
-    errorMessages.innerHTML = '';
-    trackNameInput.value = currentTrack.name;
-    trackCreatorInput.value = currentTrack.creator;
-    creating = true;
-    editing = true;
-    renderSidePanel("creating")
-    segmentData = currentTrack.segmentData()
-    clearCanvas();
-    currentTrack.drawTrack();
-    addGridLines();
-}
-
-editTrackButton.addEventListener("click", handleEditTrack)
-
-const handleDeleteTrack = (e) => {
-    TrackAPI.destroy(currentTrack.id);
-}
-
-deleteTrackButton.addEventListener("click", handleDeleteTrack)
-
-const handleDiscardTrack = (e) => {
-    renderSidePanel("home");
-    clearCanvas();
-    creating = false;
-}
-
-discardTrackButton.addEventListener("click", handleDiscardTrack)
-
-trackNameSearch.addEventListener('change', renderIndex)
-trackNameSearch.addEventListener('keyup', renderIndex)
-
-// Drag and drop track creation handling
-const handleDrop = (e) => {
-    e.preventDefault();
-    if (!creating || !dragged.classList.contains('segment-canvas')) return
-    Segment.new(e.offsetX, e.offsetY, parseInt(dragged.dataset.id));
-    addGridLines();
-}
-
-canvas.addEventListener("dragover", e => e.preventDefault(), false);
-
-canvas.addEventListener('drop', handleDrop, false);

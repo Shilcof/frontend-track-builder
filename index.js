@@ -168,9 +168,12 @@ function addJsEventListeners() {
         pressed.push(e.key);
         pressed.splice(-konami.length - 1, pressed.length - konami.length);
         if (checkArrayEquality(pressed, konami)) {
+            const editTrackButton = document.getElementById('edit-track');
+            const deleteTrackButton = document.getElementById('delete-track');
             editTrackButton.style.display = "";
             deleteTrackButton.style.display = "";
         }
+
         switch(e.key) {
             case "ArrowUp":
                 accellerating = false;
@@ -187,7 +190,6 @@ function addJsEventListeners() {
     });
 
     window.addEventListener('keydown', e => {
-        e.preventDefault();
         switch(e.key) {
             case "ArrowUp":
                 accellerating = true;
