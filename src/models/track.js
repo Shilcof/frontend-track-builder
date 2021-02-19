@@ -81,6 +81,8 @@ const showTrack = (trackInfo, index = false) => {
     trackName.innerHTML = `${track.name}`
     createdBy.innerHTML = `created by: ${track.creator ? track.creator : 'anonymous'}`
     track.drawTrack();
+    window.cancelAnimationFrame(animation);
+    animation = window.requestAnimationFrame(drawCars);
 }
 
 const indexTracks = (tracksInfo) => {
@@ -214,6 +216,8 @@ const handleEditTrack = (e) => {
     editing = true;
     renderSidePanel("creating")
     segmentData = currentTrack.segmentData()
+    clearCanvas();
+    currentTrack.drawTrack();
     addGridLines();
 }
 
