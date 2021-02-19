@@ -120,6 +120,7 @@ class Track {
         t.hideElement();
         renderIndex();
         clearCanvas();
+        welcomeText();
     }
 }
 
@@ -226,6 +227,7 @@ function addTrackEventListeners() {
     const handleDiscardTrack = (e) => {
         renderSidePanel("home");
         clearCanvas();
+        welcomeText();
         creating = false;
     }
     

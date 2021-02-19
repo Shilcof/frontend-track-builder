@@ -2,6 +2,7 @@
 TrackAPI.index();
 Segment.buildSegmentCanvasses();
 renderSidePanel("home");
+welcomeText();
 addJsEventListeners();
 
 // konami feature
@@ -30,6 +31,12 @@ function renderSidePanel(panelName) {
     }
 }
 
+function welcomeText() {
+    ctx.font = '48px serif';
+    ctx.fillText('Welcome to', 160, 225);
+    ctx.fillText('Track Builder', 140, 275);
+}
+
 // driving set up
 let accellerating = false;
 let rightSteering = 0;
@@ -40,6 +47,7 @@ let time;
 
 let animation;
 
+// could be substituded for an ip address fetch
 let ip = Math.random();
 
 let colours = [
@@ -59,8 +67,13 @@ let myCar = {
 }
 let cars = {};
 cars[ip] = myCar;
-let ready;
 
+setInterval(() => {
+    cars = {};
+    cars[ip] = myCar;
+}, 15000);
+
+let ready;
 const drawCars = () => {
     if (creating || !currentTrack) return
     // canvas set up
@@ -120,11 +133,6 @@ const drawCars = () => {
 }
 
 // socket set up
-setInterval(() => {
-    cars = {};
-    cars[ip] = myCar;
-}, 15000);
-
 const socket = new WebSocket(webSocket);
 
 socket.onmessage = function(e) {
@@ -208,8 +216,8 @@ function addJsEventListeners() {
         creating = false;
         currentTrack = null;
         renderSidePanel('home');
-        // code for welcom canvas here?
         clearCanvas();
+        welcomeText();
     })
     
     window.addEventListener('keyup', (e) => {
