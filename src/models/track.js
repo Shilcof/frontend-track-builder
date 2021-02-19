@@ -81,6 +81,7 @@ class Track {
         createdBy.innerHTML = `created by: ${track.creator ? track.creator : 'anonymous'}`
         track.drawTrack();
         window.cancelAnimationFrame(animation);
+        requestSubscribe();
         animation = window.requestAnimationFrame(drawCars);
     }
 
@@ -110,16 +111,16 @@ class Track {
             throw new Error(track.message);
         }
     }
-}
 
-const deleteTrack = (track) => {
-    renderSidePanel("home");
-    const t = Track.all.find(t=>t.id === track.id);
-    const tIndex = Track.all.indexOf(t);
-    Track.all.splice(tIndex, 1);
-    t.hideElement();
-    renderIndex();
-    clearCanvas();
+    static destroy = (track) => {
+        renderSidePanel("home");
+        const t = Track.all.find(t=>t.id === track.id);
+        const tIndex = Track.all.indexOf(t);
+        Track.all.splice(tIndex, 1);
+        t.hideElement();
+        renderIndex();
+        clearCanvas();
+    }
 }
 
 const displayErrors = (errors) => {

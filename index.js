@@ -40,12 +40,7 @@ let time;
 
 let animation;
 
-let ip;
-
-function getIP(json) {
-    ip = json.ip;
-    // ip = Math.random();
-}
+let ip = Math.random();
 
 let colours = [
     "red",
@@ -59,10 +54,12 @@ let myCar = {
     position: [255, 269],
     angle: 0,
     colour: colours[Math.floor(Math.random() * colours.length)],
-    ip: ip
+    ip: ip,
+    active: true
 }
 let cars = {};
 cars[ip] = myCar;
+let ready;
 
 const drawCars = () => {
     if (creating || !currentTrack) return
@@ -98,15 +95,17 @@ const drawCars = () => {
 
     // drawing all cars to the canvas
     for (const carId in cars) {
-        let position = cars[carId].position;
-        let angle = cars[carId].angle;
-        let colour = cars[carId].colour;
-
-        ctx.strokeStyle = colour;
-        ctx.beginPath();
-        ctx.moveTo(position[0]-5*Math.cos(angle), position[1]-5*Math.sin(angle));
-        ctx.lineTo(position[0]+5*Math.cos(angle), position[1]+5*Math.sin(angle));
-        ctx.stroke();
+        if (cars[carId].active === true) {
+            let position = cars[carId].position;
+            let angle = cars[carId].angle;
+            let colour = cars[carId].colour;
+    
+            ctx.strokeStyle = colour;
+            ctx.beginPath();
+            ctx.moveTo(position[0]-5*Math.cos(angle), position[1]-5*Math.sin(angle));
+            ctx.lineTo(position[0]+5*Math.cos(angle), position[1]+5*Math.sin(angle));
+            ctx.stroke();
+        }
     }
 
     // resetting the canvas
@@ -114,7 +113,7 @@ const drawCars = () => {
     ctx.strokeStyle = "black";
 
     // sending to the server the users car location
-    updateCarLocation();
+    if (ready) updateCarLocation();
 
     // requesting next animation and storing key to stop animation
     animation = (window.requestAnimationFrame(drawCars));
@@ -124,28 +123,30 @@ const drawCars = () => {
 const socket = new WebSocket(webSocket);
 
 socket.onopen = function(e){
-    requestSubscribe();
- }
+    // requestSubscribe();
+}
 
 socket.onmessage = function(e) {
     const data = JSON.parse(e.data);
     if (data.type === 'ping' || creating || !data.message) return
     const carData = data.message.content;
-    cars[carData.id] = carData;
+    cars[carData.ip] = carData;
 }
 
 function requestSubscribe() {
     const message = {
         command: "subscribe",
-        identifier: JSON.stringify({channel: "TrackChannel"})
+        identifier: JSON.stringify({channel: "TrackChannel", id: currentTrack.id})
     };
     socket.send(JSON.stringify(message));
+    ready = false;
+    setTimeout(()=>ready=true, 500);
 }
 
 function updateCarLocation() {
     const message = {
         command: "message",
-        identifier: JSON.stringify({channel: "TrackChannel"}),
+        identifier: JSON.stringify({channel: "TrackChannel", id: currentTrack.id}),
         data: JSON.stringify(myCar)
     };
     socket.send(JSON.stringify(message));
