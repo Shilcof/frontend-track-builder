@@ -120,6 +120,11 @@ const drawCars = () => {
 }
 
 // socket set up
+setInterval(() => {
+    cars = {};
+    cars[ip] = myCar;
+}, 15000);
+
 const socket = new WebSocket(webSocket);
 
 socket.onmessage = function(e) {
@@ -128,9 +133,18 @@ socket.onmessage = function(e) {
     const carData = data.message.content;
     if (ip !== carData.ip && ready) cars[carData.ip] = carData;
     if (carData.active === false) {
+        setTimeout(() => {
+            cars = {};
+            cars[ip] = myCar;
+        }, 30);
         cars = {};
         cars[ip] = myCar;
     }
+}
+
+socket.onclose = () => {
+    removeCar(channel);
+    unsubscribeFrom(channel);
 }
 
 let channel;
@@ -141,20 +155,8 @@ function requestSubscribe() {
     readyTimeout = setTimeout(()=>ready=true, 100);
 
     if (channel) {
-        const removeCar = {...myCar};
-        removeCar.active = false;
-        let message = {
-            command: "message",
-            identifier: JSON.stringify({channel: "TrackChannel", id: channel}),
-            data: JSON.stringify(removeCar)
-        };
-        socket.send(JSON.stringify(message));
-        
-        message = {
-            command: "unsubscribe",
-            identifier: JSON.stringify({channel: "TrackChannel", id: channel})
-        };
-        socket.send(JSON.stringify(message));
+        removeCar(channel);
+        unsubscribeFrom(channel);
     }
 
     const message = {
@@ -162,11 +164,31 @@ function requestSubscribe() {
         identifier: JSON.stringify({channel: "TrackChannel", id: currentTrack.id})
     };
     socket.send(JSON.stringify(message));
+
     channel = currentTrack.id;
     
     cars = {};
     cars[ip] = myCar;
     console.log(cars)
+}
+
+function unsubscribeFrom(channelNumber) {
+    const message = {
+        command: "unsubscribe",
+        identifier: JSON.stringify({channel: "TrackChannel", id: channelNumber})
+    };
+    socket.send(JSON.stringify(message));
+}
+
+function removeCar(channelNumber) {
+    const removeCar = {...myCar};
+    removeCar.active = false;
+    let message = {
+        command: "message",
+        identifier: JSON.stringify({channel: "TrackChannel", id: channelNumber}),
+        data: JSON.stringify(removeCar)
+    };
+    socket.send(JSON.stringify(message));
 }
 
 function updateCarLocation() {
@@ -230,5 +252,11 @@ function addJsEventListeners() {
             default:
                 return
         }
+    });
+
+    window.addEventListener('beforeunload', (event) => {
+        event.preventDefault();
+        removeCar(channel);
+        unsubscribeFrom(channel);
     });
 }
