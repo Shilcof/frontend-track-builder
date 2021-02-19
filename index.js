@@ -1,18 +1,10 @@
-const home = document.getElementById("home-link");
-const id = Math.random();
+// js setup
+TrackAPI.index();
+Segment.buildSegmentCanvasses();
+renderSidePanel("home");
+addJsEventListeners();
 
-let animation;
-
-let myCar = {
-    position: [300, 300],
-    angle: 0,
-    colour: "red",
-    id: id
-}
-
-let cars = {};
-cars[id] = myCar;
-
+// konami feature
 const pressed = [];
 
 function checkArrayEquality(a, b) {
@@ -23,29 +15,7 @@ function checkArrayEquality(a, b) {
     return true;
 }
 
-window.addEventListener('keyup', (e) => {
-    const konami = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "b", "a"];
-    pressed.push(e.key);
-    pressed.splice(-konami.length - 1, pressed.length - konami.length);
-    if (checkArrayEquality(pressed, konami)) {
-        editTrackButton.style.display = "";
-        deleteTrackButton.style.display = "";
-    }
-    switch(e.key) {
-        case "ArrowUp":
-            accellerating = false;
-            break;
-        case "ArrowLeft":
-            leftSteering = 0;
-            break;
-        case "ArrowRight":
-            rightSteering = 0;
-            break;
-        default:
-            return
-    }
-});
-
+// side panel helper
 function renderSidePanel(panelName) {
     const homePanel = document.getElementById("home");
     const viewingPanel = document.getElementById("viewing");
@@ -60,19 +30,7 @@ function renderSidePanel(panelName) {
     }
 }
 
-TrackAPI.index();
-Segment.buildSegmentCanvasses();
-renderSidePanel("home")
-
-home.addEventListener('click',e=> {
-    creating = false;
-    currentTrack = null;
-    renderSidePanel('home');
-    // code for welcom canvas here?
-    clearCanvas();
-})
-
-// game trials
+// driving set up
 let accellerating = false;
 let rightSteering = 0;
 let leftSteering = 0;
@@ -80,8 +38,35 @@ let speed = 0;
 let timeBefore;
 let time;
 
+let animation;
+
+let ip;
+
+function getIP(json) {
+    ip = json.ip;
+    // ip = Math.random();
+}
+
+let colours = [
+    "red",
+    "blue",
+    "yellow",
+    "orange",
+    "purple"
+]
+
+let myCar = {
+    position: [255, 269],
+    angle: 0,
+    colour: colours[Math.floor(Math.random() * colours.length)],
+    ip: ip
+}
+let cars = {};
+cars[ip] = myCar;
+
 const drawCars = () => {
     if (creating || !currentTrack) return
+    // canvas set up
     var ctx = canvas.getContext('2d');
     ctx.lineWidth = 2;
     ctx.strokeStyle = "black";
@@ -89,13 +74,13 @@ const drawCars = () => {
     currentTrack.drawTrack();
     ctx.lineWidth = 8;
 
+    // interval set up for smooth animation
     timeBefore = time;
     time = new Date;
-
     let interval = time - timeBefore;
     if (isNaN(interval)) interval = 15;
 
-    
+    // updating this car location based on user input
     if (accellerating) {
         speed += 60*interval/10000;
         if (speed > 25/interval) speed = 25/interval;
@@ -103,16 +88,15 @@ const drawCars = () => {
         speed -= 60*interval/10000;
         if (speed < 0) speed = 0;
     }
-
     myCar.position[0] += speed*Math.cos(myCar.angle);
     myCar.position[1] += speed*Math.sin(myCar.angle);
     if (myCar.position[0] < 5) myCar.position[0] = 5;
     if (myCar.position[1] < 5) myCar.position[1] = 5;
     if (myCar.position[0] > 535) myCar.position[0] = 535;
     if (myCar.position[1] > 535) myCar.position[1] = 535;
-
     myCar.angle += (2.5*(rightSteering - leftSteering)*Math.PI/10)/interval;
 
+    // drawing all cars to the canvas
     for (const carId in cars) {
         let position = cars[carId].position;
         let angle = cars[carId].angle;
@@ -125,15 +109,18 @@ const drawCars = () => {
         ctx.stroke();
     }
 
+    // resetting the canvas
     ctx.lineWidth = 2;
     ctx.strokeStyle = "black";
 
+    // sending to the server the users car location
     updateCarLocation();
 
+    // requesting next animation and storing key to stop animation
     animation = (window.requestAnimationFrame(drawCars));
 }
 
-// socket trails
+// socket set up
 const socket = new WebSocket(webSocket);
 
 socket.onopen = function(e){
@@ -145,25 +132,7 @@ socket.onmessage = function(e) {
     if (data.type === 'ping' || creating || !data.message) return
     const carData = data.message.content;
     cars[carData.id] = carData;
-    // cars = data.cars;
 }
-
-window.addEventListener('keydown', e => {
-    e.preventDefault();
-    switch(e.key) {
-        case "ArrowUp":
-            accellerating = true;
-            break;
-        case "ArrowLeft":
-            leftSteering = 1;
-            break;
-        case "ArrowRight":
-            rightSteering = 1;
-            break;
-        default:
-            return
-    }
-});
 
 function requestSubscribe() {
     const message = {
@@ -182,10 +151,55 @@ function updateCarLocation() {
     socket.send(JSON.stringify(message));
 }
 
-    // cars[1].position[0] += 1*Math.cos(cars[1].angle);
-    // cars[1].position[1] += 1*Math.sin(cars[1].angle);
-    // if (cars[1].position[0] < 5) cars[1].position[0] = 5;
-    // if (cars[1].position[1] < 5) cars[1].position[1] = 5;
-    // if (cars[1].position[0] > 535) cars[1].position[0] = 535;
-    // if (cars[1].position[1] > 535) cars[1].position[1] = 535;
-    // if (Math.floor(10*Math.random()) === 0) cars[1].angle += (3*Math.random()-1)*Math.PI/10;
+// Event listeners
+function addJsEventListeners() {
+    const home = document.getElementById("home-link");
+    
+    home.addEventListener('click',e=> {
+        creating = false;
+        currentTrack = null;
+        renderSidePanel('home');
+        // code for welcom canvas here?
+        clearCanvas();
+    })
+    
+    window.addEventListener('keyup', (e) => {
+        const konami = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "b", "a"];
+        pressed.push(e.key);
+        pressed.splice(-konami.length - 1, pressed.length - konami.length);
+        if (checkArrayEquality(pressed, konami)) {
+            editTrackButton.style.display = "";
+            deleteTrackButton.style.display = "";
+        }
+        switch(e.key) {
+            case "ArrowUp":
+                accellerating = false;
+                break;
+            case "ArrowLeft":
+                leftSteering = 0;
+                break;
+            case "ArrowRight":
+                rightSteering = 0;
+                break;
+            default:
+                return
+        }
+    });
+
+    window.addEventListener('keydown', e => {
+        e.preventDefault();
+        switch(e.key) {
+            case "ArrowUp":
+                accellerating = true;
+                break;
+            case "ArrowLeft":
+                leftSteering = 1;
+                break;
+            case "ArrowRight":
+                rightSteering = 1;
+                break;
+            default:
+                return
+        }
+    });
+}
