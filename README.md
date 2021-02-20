@@ -4,6 +4,8 @@ Frontend code for track-builder, a javascript single page web application where 
 
 When viewing tracks, a 'car' is generated for each user that can be driven around the track. Using websockets, the location of the car is braodcast to any other user that is also viewing that track so that they can race each other on it.
 
+The app is currently hosted at https://track-builder.netlify.app/, please visit it and encourage your friends to visit the same track to race!
+
 ## Installation
 
 NetWorkOut was developed using Javascript and Ruby on Rails.
