@@ -1,5 +1,5 @@
 const port = 'https://track-builder.herokuapp.com';
-const webSocket = 'wss://track-builder.herokuapp.com/cable';
+const webSocket = 'https://track-builder.herokuapp.com/cable';
 
 class TrackAPI {
     static baseURL = port + "/tracks";
