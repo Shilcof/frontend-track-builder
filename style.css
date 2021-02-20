@@ -11,3 +11,19 @@ canvas {
     margin-right: auto;
     display: block;
 }
+
+.track-div{ 
+    transition: all .2s ease-in-out; 
+}
+
+.track-div:hover{ 
+    transform: scale(1.05);
+}
+
+.track-card-body{ 
+    transition: all .2s ease-in-out; 
+}
+
+.track-card-body:hover{
+    background-color: #748596;
+}

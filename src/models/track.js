@@ -24,6 +24,7 @@ class Track {
         this.creator = creator;
         this.segments = Segment.newSegments(segments);
         this.element = document.createElement('div');
+        this.element.classList.add('track-div');
         trackList.append(this.element);
         this.element.style.display = "none";
         if (index) Track.all.push(this);
@@ -40,7 +41,7 @@ class Track {
     render() {
         this.element.innerHTML = `
             <div class="card mb-3 pb-n1 bg-light" data-id=${this.id}>
-                <div class="card-body" data-id=${this.id}>
+                <div class="card-body track-card-body" data-id=${this.id}>
                     <h5 data-id=${this.id}>${this.name}</h5> 
                     created by: ${this.creator ? this.creator : 'anonymous'}
                 </div>
