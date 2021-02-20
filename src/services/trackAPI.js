@@ -1,4 +1,4 @@
-const port = 'http://localhost:3000';
+const port = 'https://track-builder.herokuapp.com/';
 const webSocket = 'ws://localhost:3000/cable';
 
 class TrackAPI {
