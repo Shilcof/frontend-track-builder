@@ -177,7 +177,6 @@ function requestSubscribe() {
     
     cars = {};
     cars[ip] = myCar;
-    console.log(cars)
 }
 
 function unsubscribeFrom(channelNumber) {
