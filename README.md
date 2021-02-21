@@ -36,6 +36,8 @@ and then in the front end repository open the index.html page in your browser.
 
 To stop hosting the aplication, simply enter control + 'C' into the terminal where it is running.
 
+Also in the trackAPI.js file you must amend the port and websocket address to the localhosting that you use. Then open the index.html file in your browser.
+
 From here you can create your own tracks, and if you use separate private browser windows, will be able to see cars moving in each page.
 
 ## Contributing
