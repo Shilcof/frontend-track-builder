@@ -8,9 +8,9 @@ The app is currently hosted at https://track-builder.netlify.app/, please visit 
 
 ## Installation
 
-NetWorkOut was developed using Javascript and Ruby on Rails.
+track-builder was developed using Javascript and Ruby on Rails.
 
-To run NetWorkOut on your machine, you must first download the files from this repository and the backend. On the backend you must change into the main directory in your terminal.
+To run track-builder on your machine, you must first download the files from this repository and the backend. On the backend you must change into the main directory in your terminal.
 
 Then you must use bundler to install the required gems.
 
